@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     try {
-                        val response = ApiConfig.getApiService("").login(email, password)
+                        val response = ApiConfig.getApiService { "" }.login(email, password)
 
                         binding.loginButton.isEnabled = true
 

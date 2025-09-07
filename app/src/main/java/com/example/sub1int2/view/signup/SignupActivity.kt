@@ -128,7 +128,7 @@ class SignupActivity : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     try {
-                        val response = ApiConfig.getApiService("").register(name, email, password)
+                        val response = ApiConfig.getApiService { "" }.register(name, email, password)
 
                         binding.signupButton.isEnabled = true
 

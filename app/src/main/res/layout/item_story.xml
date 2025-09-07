@@ -20,7 +20,8 @@
             android:contentDescription="@string/story_image"
             android:scaleType="centerCrop"
             android:src="@android:drawable/ic_menu_gallery"
-            android:transitionName="story_image" />
+            android:transitionName="story_image"
+            tools:src="@tools:sample/backgrounds/scenic"/>
 
         <TextView
             android:id="@+id/tv_story_title"
@@ -48,7 +49,7 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
             android:transitionName="story_description"
-            tools:text="This is a sample description that might be very long and will be truncated after two lines with ellipsis..." />
+            tools:text="This is a sample description that might be very long and will be truncated after two lines with ellipsis. Just do it, guys." />
 
     </LinearLayout>
 

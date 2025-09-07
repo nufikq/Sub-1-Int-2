@@ -1,20 +1,18 @@
 package com.example.sub1int2.view.main
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sub1int2.R
+import com.example.sub1int2.data.response.ListStoryItem
 import com.example.sub1int2.databinding.ActivityMainBinding
 import com.example.sub1int2.view.ViewModelFactory
 import com.example.sub1int2.view.welcome.WelcomeActivity
@@ -39,6 +37,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         myToolbar()
+
+        val layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+
+        observeViewModel()
+        viewModel.fetchStory()
     }
 
     private fun myToolbar() {
@@ -57,7 +61,35 @@ class MainActivity : AppCompatActivity() {
                 viewModel.logout()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun observeViewModel() {
+        viewModel.stories.observe(this, Observer { listStory ->
+            setEventData(listStory)
+        })
+
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            showLoading(isLoading)
+        })
+
+        viewModel.errorMessage.observe(this, Observer { errorMessage ->
+            if (errorMessage != null) {
+                android.widget.Toast.makeText(this, errorMessage, android.widget.Toast.LENGTH_LONG)
+                    .show()
+            }
+        })
+    }
+
+    private fun setEventData(listStory: List<ListStoryItem>) {
+        val adapter = MainAdapter()
+        binding.recyclerView.adapter = adapter
+        adapter.submitList(listStory)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }
