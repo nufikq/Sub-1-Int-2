@@ -16,4 +16,12 @@
     <string name="add_story">Tambah story</string>
     <string name="appbar_title">Dicoding Story</string>
     <string name="story_image">Gambar Story</string>
+    <string name="detail_appbar_title">Story Details</string>
+
+    <string name="camera_x">CameraX</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="upload">Unggah</string>
+    <string name="empty_image_warning">Silakan masukkan berkas gambar terlebih dahulu.</string>
+    <string name="masukkan_deskripsi">Masukkan deskripsi</string>
 </resources>

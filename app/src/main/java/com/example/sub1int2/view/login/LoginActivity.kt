@@ -73,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
 
                             AlertDialog.Builder(this@LoginActivity).apply {
                                 setTitle("Yeah!")
-                                setMessage(response.message ?: "Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
+                                setMessage("${response.message ?: "Login berhasil"}. Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
                                 setPositiveButton("Lanjut") { _, _ ->
                                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -97,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
 
                         AlertDialog.Builder(this@LoginActivity).apply {
                             setTitle("Error")
-                            setMessage("Koneksi bermasalah. Silakan coba lagi.")
+                            setMessage("${e.message}\nSilakan coba lagi.")
                             setPositiveButton("OK", null)
                             create()
                             show()

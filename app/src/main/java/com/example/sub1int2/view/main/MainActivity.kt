@@ -15,6 +15,7 @@ import com.example.sub1int2.R
 import com.example.sub1int2.data.response.ListStoryItem
 import com.example.sub1int2.databinding.ActivityMainBinding
 import com.example.sub1int2.view.ViewModelFactory
+import com.example.sub1int2.view.addstory.AddStoryActivity
 import com.example.sub1int2.view.welcome.WelcomeActivity
 
 class MainActivity : AppCompatActivity() {
@@ -57,6 +58,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_add_story -> {
+                val intent = Intent(this, AddStoryActivity::class.java)
+                startActivity(intent)
+                true
+            }
             R.id.action_logout -> {
                 viewModel.logout()
                 true

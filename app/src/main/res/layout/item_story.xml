@@ -19,7 +19,6 @@
             android:layout_height="120dp"
             android:contentDescription="@string/story_image"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_gallery"
             android:transitionName="story_image"
             tools:src="@tools:sample/backgrounds/scenic"/>
 

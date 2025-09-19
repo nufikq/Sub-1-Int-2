@@ -31,7 +31,7 @@ class MainViewModel(private val repository: UserRepository) : ViewModel() {
                 // Get the user session to access the token
                 repository.getSession().collect { user ->
                     if (user.isLogin && user.token.isNotEmpty()) {
-                        val response = ApiConfig.getApiService { user.token }.getStories("Bearer ${user.token}")
+                        val response = ApiConfig.getApiService { user.token }.getStories()
                         _isLoading.value = false
 
                         if (response.listStory.isEmpty()) {
