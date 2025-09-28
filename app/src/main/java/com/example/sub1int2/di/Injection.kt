@@ -5,6 +5,7 @@ import com.example.sub1int2.data.api.ApiConfig
 import com.example.sub1int2.data.repository.UserRepository
 import com.example.sub1int2.data.pref.UserPreference
 import com.example.sub1int2.data.pref.dataStore
+import com.example.sub1int2.data.repository.UploadRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -18,5 +19,9 @@ object Injection {
             pref,
             apiService
         )
+    }
+    fun provideUploadRepository(): UploadRepository {
+        val apiService = ApiConfig.getApiService { "" }
+        return UploadRepository.getInstance(apiService)
     }
 }

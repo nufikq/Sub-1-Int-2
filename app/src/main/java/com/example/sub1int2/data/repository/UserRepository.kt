@@ -3,8 +3,12 @@ package com.example.sub1int2.data.repository
 import com.example.sub1int2.data.api.ApiService
 import com.example.sub1int2.data.pref.UserModel
 import com.example.sub1int2.data.pref.UserPreference
+import com.example.sub1int2.data.response.FileUploadResponse
 import com.example.sub1int2.data.response.LoginResponse
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class UserRepository private constructor(
     private val userPreference: UserPreference,
@@ -26,6 +30,11 @@ class UserRepository private constructor(
     suspend fun logout() {
         userPreference.logout()
     }
+
+//    suspend fun uploadStory(imageFile: MultipartBody.Part, description: RequestBody): FileUploadResponse {
+//        val user = userPreference.getSession().first()
+//        return apiService.uploadImage(imageFile, description, "Bearer ${user.token}")
+//    }
 
     companion object {
         @Volatile

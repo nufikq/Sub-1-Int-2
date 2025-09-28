@@ -4,12 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import com.example.sub1int2.data.ResultState
 import com.example.sub1int2.data.api.ApiConfig
 import com.example.sub1int2.data.repository.UserRepository
 import com.example.sub1int2.data.pref.UserModel
+import com.example.sub1int2.data.response.FileUploadResponse
 import com.example.sub1int2.data.response.ListStoryItem
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class MainViewModel(private val repository: UserRepository) : ViewModel() {
 
@@ -51,6 +56,16 @@ class MainViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
+//    fun uploadStory(imageFile: MultipartBody.Part, description: RequestBody): LiveData<ResultState<FileUploadResponse>> = liveData {
+//        emit(ResultState.Loading)
+//        try {
+//            val response = repository.uploadStory(imageFile, description)
+//            emit(ResultState.Success(response))
+//        } catch (e: Exception) {
+//            emit(ResultState.Error(e.message ?: "Unknown error"))
+//        }
+//    }
+
     fun getSession(): LiveData<UserModel> {
         return repository.getSession().asLiveData()
     }
@@ -60,5 +75,4 @@ class MainViewModel(private val repository: UserRepository) : ViewModel() {
             repository.logout()
         }
     }
-
 }

@@ -6,17 +6,40 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import com.example.sub1int2.R
+import com.example.sub1int2.data.ResultState
+import com.example.sub1int2.data.api.ApiConfig
+import com.example.sub1int2.data.response.FileUploadResponse
 import com.example.sub1int2.view.addstory.CameraActivity.Companion.CAMERAX_RESULT
 import com.example.sub1int2.databinding.ActivityAddStoryBinding
 import com.example.sub1int2.getImageUri
+import com.example.sub1int2.reduceFileImage
+import com.example.sub1int2.uriToFile
+import com.example.sub1int2.view.ViewModelFactory
+import com.example.sub1int2.view.main.MainActivity
+import com.example.sub1int2.view.main.MainViewModel
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 
 class AddStoryActivity : AppCompatActivity() {
+
+//    private val viewModel by viewModels<MainViewModel> {
+//        ViewModelFactory.getInstance(this)
+//    }
     private lateinit var binding: ActivityAddStoryBinding
 
     private var currentImageUri: Uri? = null
@@ -49,7 +72,7 @@ class AddStoryActivity : AppCompatActivity() {
 
         binding.galleryButton.setOnClickListener { startGallery() }
         binding.cameraButton.setOnClickListener { startCamera() }
-        binding.cameraXButton.setOnClickListener { startCameraX() }
+        // binding.cameraXButton.setOnClickListener { startCameraX() }
         binding.uploadButton.setOnClickListener { uploadImage() }
     }
 
@@ -105,9 +128,46 @@ class AddStoryActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
-        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
+        currentImageUri?.let { uri ->
+            val imageFile = uriToFile(uri, this).reduceFileImage()
+            Log.d("Image File", "showImage: ${imageFile.path}")
+            val description = binding.descriptionEditText.text.toString()
+
+            showLoading(true)
+
+            val requestBody = description.toRequestBody("text/plain".toMediaType())
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "photo",
+                imageFile.name,
+                requestImageFile
+            )
+            lifecycleScope.launch {
+                try {
+                    val apiService = ApiConfig.getApiService { "" }
+                    val successResponse = apiService.uploadImage(multipartBody, requestBody)
+                    showToast(successResponse.message)
+                    showLoading(false)
+                } catch (e: HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    val errorResponse = Gson().fromJson(errorBody, FileUploadResponse::class.java)
+                    showToast(errorResponse.message)
+                    showLoading(false)
+                }
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
     }
