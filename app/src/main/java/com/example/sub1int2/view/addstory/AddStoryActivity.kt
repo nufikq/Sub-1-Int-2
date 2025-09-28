@@ -37,12 +37,13 @@ import retrofit2.HttpException
 
 class AddStoryActivity : AppCompatActivity() {
 
-//    private val viewModel by viewModels<MainViewModel> {
-//        ViewModelFactory.getInstance(this)
-//    }
-    private lateinit var binding: ActivityAddStoryBinding
+    private val viewModel by viewModels<AddStoryViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
 
+    private lateinit var binding: ActivityAddStoryBinding
     private var currentImageUri: Uri? = null
+    private var userToken: String = ""
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -65,6 +66,11 @@ class AddStoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Observe user session to get token
+        viewModel.getSession().observe(this) { user ->
+            userToken = user.token
+        }
 
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
@@ -144,7 +150,7 @@ class AddStoryActivity : AppCompatActivity() {
             )
             lifecycleScope.launch {
                 try {
-                    val apiService = ApiConfig.getApiService { "" }
+                    val apiService = ApiConfig.getApiService { userToken }
                     val successResponse = apiService.uploadImage(multipartBody, requestBody)
                     showToast(successResponse.message)
                     showLoading(false)
